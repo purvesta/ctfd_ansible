@@ -1,0 +1,6 @@
+---
+# defaults file for config
+ctfd_user: "ctfd"
+ctfd_group: "ctfd"
+ctfd_port: 8000
+ctfd_gunicorn_workers: "1"

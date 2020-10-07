@@ -1,0 +1,60 @@
+---
+- name: Install packages
+  package:
+    name:
+      - git
+      - python3
+      - python3-wheel
+      - python3-devel
+      - gcc
+
+# Only run on one host when it doesn't already exist
+- name: Clone the ctfd repo
+  git:
+    repo: "{{ ctfd_repo }}"
+    dest: /data/ctfd
+    force: yes
+  run_once: true
+
+- name: Create CTFd server group
+  group:
+    name: "{{ ctfd_group }}"
+    state: present
+
+- name: Create CTFd server user
+  user:
+    name: "{{ ctfd_user }}"
+    uid: 1001
+    group: "{{ ctfd_group }}"
+    create_home: "no"
+    system: "yes"
+
+- name: Add ec2-user to CTF group
+  user:
+    name: ec2-user
+    append: 'yes'
+    groups: "{{ ctfd_group }}"
+
+- name: Change ownership
+  file: "dest=/data/ctfd owner={{ ctfd_user }} group={{ ctfd_group }} mode=0775 recurse=yes"
+
+- name: Install pip requirements
+  pip:
+    executable: "pip3"
+    requirements: "/data/ctfd/requirements.txt"
+
+- name: Install additional requirements
+  pip:
+    executable: "pip3"
+    name:
+      - psutil>=5.7.0
+
+- name: Clone ctfd plugins
+  git:
+    repo: "{{ item['href'] }}"
+    dest: "/data/ctfd/CTFd/plugins/{{ item['name'] }}"
+    version: master
+    accept_hostkey: yes
+    force: yes
+  run_once: true
+  loop: "{{ ctfd_plugins }}"

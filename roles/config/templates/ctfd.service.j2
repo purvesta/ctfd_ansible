@@ -1,0 +1,19 @@
+[Unit]
+Description = CTFd
+After = network.target
+
+[Service]
+PermissionsStartOnly = true
+PIDFile = /tmp/ctfd.pid
+User = {{ ctfd_user }}
+Group = {{ ctfd_group }}
+WorkingDirectory = /data/ctfd
+ExecStart = /usr/local/bin/gunicorn -c /data/ctfd/gunicorn.py wsgi:app
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+PrivateTmp = true
+Restart = always
+RestartSec = 20
+
+[Install]
+WantedBy = multi-user.target

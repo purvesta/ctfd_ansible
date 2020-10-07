@@ -1,0 +1,31 @@
+---
+- name: Install packages
+  package:
+    name:
+      - git
+      - python3
+      - python3-wheel
+      - python3-devel
+      - gcc
+      - docker
+
+- name: Install pip requirements
+  pip:
+    executable: "pip3"
+    name:
+      - ansible
+      - docker
+
+- name: Clone the awx repo
+  git:
+    repo: "{{ awx_repo }}"
+    version: "15.0.0"
+    dest: /opt/awx
+  #  force: yes
+  #run_once: true
+
+# sudo systemctl start docker
+- name: Start docker 
+
+# cd /opt/awx/installer
+# sudo /usr/local/bin/ansible-playbook -i inventory install.yml

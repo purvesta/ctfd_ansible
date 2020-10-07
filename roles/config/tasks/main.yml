@@ -1,0 +1,55 @@
+---
+- name: Make CTFd log directory
+  file:
+    path: "/var/log/ctfd/"
+    state: "directory"
+    owner: "{{ ctfd_user }}"
+    group: "{{ ctfd_group }}"
+
+- name: Make CTFd error log file
+  file:
+    state: touch
+    path: "/var/log/ctfd/error.log"
+    mode: "0664"
+    owner: "{{ ctfd_user }}"
+    group: "{{ ctfd_group }}"
+
+- name: Make CTFd access log file
+  file:
+    state: touch
+    path: "/var/log/ctfd/access.log"
+    mode: "0664"
+    owner: "{{ ctfd_user }}"
+    group: "{{ ctfd_group }}"
+
+- name: Template out gunicorn.py
+  template:
+    src: templates/gunicorn.py.j2
+    dest: /data/ctfd/gunicorn.py
+    mode: '0664'
+    owner: "{{ ctfd_user }}"
+    group: "{{ ctfd_group }}"
+
+- name: Generate wsgi.py
+  lineinfile:
+    path: /data/ctfd/wsgi.py
+    regexp: "^    app.run.*$"
+    line: "    app.run()"
+
+- name: Template out ctfd.service
+  template:
+    src: templates/ctfd.service.j2
+    dest: /etc/systemd/system/ctfd.service
+    mode: '0755'
+    owner: "{{ ctfd_user }}"
+    group: "{{ ctfd_group }}"
+
+- name: Force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Enable ctfd
+  systemd:
+    name: ctfd.service
+    state: started
+    enabled: yes

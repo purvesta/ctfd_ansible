@@ -1,0 +1,8 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-west-1
+filters:
+  tag:Name:
+    - ctfd-asg-instance
+#hostnames:
+#  - tag:Name=ctfd-instance
