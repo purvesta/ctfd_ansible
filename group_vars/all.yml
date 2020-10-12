@@ -4,3 +4,6 @@ ctfd_user: "ctfd"
 ctfd_group: "ctfd"
 ctfd_port: 8000
 ctfd_gunicorn_workers: "3"
+s3_endpoint: ""
+access_key: "redacted"
+secret_key: "redacted"

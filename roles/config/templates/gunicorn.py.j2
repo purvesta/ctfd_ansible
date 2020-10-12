@@ -5,11 +5,13 @@ pidfile = '/tmp/gunicorn.pid'
 loglevel = 'warn'
 accesslog = '/var/log/ctfd/access.log'
 errorlog = '/var/log/ctfd/error.log'
-{#
 raw_env = [
     'DATABASE_URL={{ db_engine }}://{{ database.instance.username }}:{{ scoreboard_db_password }}@{{ database.instance.endpoint }}:{{ database.instance.port }}/{{ database.instance.db_name }}{{ db_charset }}',
     'REDIS_URL={{ cache.elasticache_clusters[0].engine }}://{{ cache.elasticache_clusters[0].cache_nodes[0].endpoint.address }}:{{ cache.elasticache_clusters[0].cache_nodes[0].endpoint.port }}',
     'ACCESSLOG=/var/log/ctfd/access.log',
-    'ERRORLOG=/var/log/ctfd/error.log'
+    'ERRORLOG=/var/log/ctfd/error.log',
+    'UPLOAD_PROVIDER=s3',
+    'AWS_ACCESS_KEY_ID={{ access_key }}',
+    'AWS_SECRET_ACCESS_KEY={{ secret_key }}',
+    'AWS_S3_ENDPOINT_URL={{ s3_endpoint }}'
 ]
-#}
